@@ -6,7 +6,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { add, format, formatDate } from "date-fns"
+import { add, format, formatDate, getHours } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -14,38 +14,92 @@ import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/
 import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-
-
+import { createBrowserClient } from "@supabase/ssr"
+import { useRouter } from "next/navigation"
+import { Database } from "../../../database.types"
+import { useState,useEffect } from "react"
 
 
 
 
 export default function ReserveForm() {
+  const router =useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
-
   
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+  
+  const [times, setTimes] = useState<string[]>([]);
+  let hour:any
+  let minute:any
+  const getTimes=(selectedDate: Date)=>{
+    const today = new Date()
+    if (selectedDate.toLocaleDateString() == today.toLocaleDateString()){
+      const currenthour=today.getHours()
+      const currentminutes =today.getMinutes()
+      if (currentminutes>30){
+        hour=currenthour+1
+        minute=0
+      }else{
+        hour=currenthour
+        minute=30
+      }
+    }else{
+      hour=12
+      minute=0
+    }
 
-   }
-   const getTimes=()=>{
-    const date=new Date()
-    const formattedDate = date.toLocaleDateString()
-    const beginning = add(formattedDate,{hours:12})
-    const end = add(formattedDate,{hours:22})
+    console.log(hour)
+    console.log(selectedDate)
+    const beginning = add(selectedDate,{hours:hour,minutes:minute})
+    const end = add(selectedDate,{hours:22,minutes:0})
     const times=[]
     for(let i=beginning;i<end;i=add(i,{minutes:30})){
       times.push(i)
     }
-    return times
+    setTimes(times.map((time) => formatDate(time, 'kk:mm')));
    }
- const times= getTimes()
+   
+   useEffect(() => {
+    if (form.watch('date')) {
+      getTimes(form.watch('date'));
+    }
+  }, [form.watch('date')]);
+
+  const onSubmit =async (data: z.infer<typeof FormSchema>)=> {
+    const supabase=createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+
+    
+    const {data:reserveData,error} = await supabase.from('reservations').insert(
+      {
+        date:data.date.toLocaleDateString(),
+        time:data.time,
+        party:data.party,
+        first_name:data.firstname,
+        last_name:data.lastname,
+        phone:data.phone,
+        email:data.email
+
+      }).select()
+      if (reserveData && reserveData.length > 0) {
+        const firstReserveId = reserveData[0].id;
+        console.log(firstReserveId);
+        router.push(`/reserve/${firstReserveId}`)
+      } else {
+        console.log('No reservation data returned.');
+      }
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+    }
 
   return(
-     <Form {...form}>
-       <form onSubmit={form.handleSubmit(onSubmit)}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
        <div className="flex flex-col items-center gap-2">
          <FormField
            control={form.control}
@@ -73,11 +127,13 @@ export default function ReserveForm() {
                  </PopoverTrigger>
                  <PopoverContent className="w-auto p-0" align="start">
                    <Calendar
+                   
                      mode="single"
                      selected={field.value}
                      onSelect={field.onChange}
                      disabled={(date) =>
-                       date < new Date()
+                       date < new Date('1/31/2024')
+
                      }
                      initialFocus
                    />
@@ -87,23 +143,23 @@ export default function ReserveForm() {
              </FormItem>
            )}
          />
-         <FormField
+        <FormField
            control={form.control}
            name="time"
            render={({ field }) => (
              <FormItem>
-               <Select onValueChange={field.onChange} defaultValue={field.value}>
+               <Select onValueChange={field.onChange} defaultValue={field.value} name="time">
                  <FormControl>
                    <SelectTrigger className="w-[240px]">
                      <SelectValue placeholder="Select a time"/>
-                   </SelectTrigger>
+        </SelectTrigger>
                  </FormControl>
                  <SelectContent>
                  {times?.map((time,i)=>(
                <div key={i}>
-                <SelectItem value={formatDate(time,"kk:mm")}>{formatDate(time,"kk:mm")}</SelectItem>
+                <SelectItem value={time}>{time}</SelectItem>
                 </div>
-                  ))}
+    ))}
                  </SelectContent>
                </Select>
                <FormMessage/>
@@ -114,7 +170,7 @@ export default function ReserveForm() {
            name="party"
            render={({ field }) => (
              <FormItem>
-               <Select onValueChange={field.onChange} defaultValue={field.value}>
+               <Select onValueChange={field.onChange} defaultValue={field.value} name="party">
                  <FormControl>
                    <SelectTrigger className="w-[240px]">
                      <SelectValue placeholder="Party size"/>
@@ -137,7 +193,7 @@ export default function ReserveForm() {
            render={({ field }) => (
              <FormItem className="w-[240px]">
                <FormControl>
-                 <Input placeholder="First name" {...field}/>
+                 <Input onChange={field.onChange} placeholder="First name" name="firstname"/>
                </FormControl>
                <FormMessage />
              </FormItem>
@@ -149,7 +205,7 @@ export default function ReserveForm() {
           render={({ field }) => (
             <FormItem className="w-[240px]">
               <FormControl>
-                <Input onChange={field.onChange} placeholder="Last name"/>
+                <Input onChange={field.onChange} placeholder="Last name" name="lastname"/>
               </FormControl>
               <FormMessage />
              </FormItem>
@@ -161,7 +217,7 @@ export default function ReserveForm() {
              render={({ field }) => (
                <FormItem className="w-[240px]">
                  <FormControl>
-                   <Input onChange={field.onChange} placeholder="Phone number"/>
+                   <Input onChange={field.onChange} placeholder="Phone number" name="phone"/>
                  </FormControl>
                  <FormMessage />
                </FormItem>
@@ -173,7 +229,7 @@ export default function ReserveForm() {
              render={({ field }) => (
                <FormItem className="w-[240px]">
                  <FormControl>
-                   <Input onChange={field.onChange} placeholder="Email"/>
+                   <Input onChange={field.onChange} placeholder="Email" name="email"/>
                  </FormControl>
                  <FormMessage />
                </FormItem>

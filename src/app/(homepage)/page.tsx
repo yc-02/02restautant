@@ -10,7 +10,6 @@ import food5 from "@/FoodImages/pexels-lina-kivaka-1459338.jpg"
 
 export default function Home() {
 
-
   return (
     <div>
       <HomeNav/>
