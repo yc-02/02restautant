@@ -57,7 +57,7 @@ export default function ReserveForm() {
 
 
 //get time options based on date for reservation form
-  const[timeOption,setTimeoOption]=useState<string[]>([])
+  const[timeOption,setTimeOption]=useState<string[]>([])
   const getTimeOption=(selectedDate:Date)=>{
     let beginningHour;
     let endHour;
@@ -90,10 +90,11 @@ export default function ReserveForm() {
   for (let i=beginningOption;i<endOption;i=addMinutes(i,30)){
     options.push(i)
   }
-  setTimeoOption(options.map((time)=>formatDate(time,'kk:mm')))
-  console.log(options)
+  setTimeOption(options.map((time)=>time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })))
+
   }
-  
+
+
   useEffect(() => {
     if (form.watch('date')) {
        getTimeOption(form.watch('date'));

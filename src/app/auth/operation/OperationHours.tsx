@@ -17,8 +17,9 @@ interface StoreData{
 
 export default function OperationHours() {
 
-  const [ operation, setOperation] = useState<StoreData[]>([]);
 
+//get operation hours from supabase to operation and pass it to card
+  const [ operation, setOperation] = useState<StoreData[]>([]);
 
   useEffect(() => {
     getData();
