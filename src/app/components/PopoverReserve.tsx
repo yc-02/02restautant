@@ -1,20 +1,22 @@
 import { Button } from "@/components/ui/button"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+
 import ReserveForm from "./ReserveForm"
 
 export function PopoverReserve() {
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
         <Button variant="outline">Make a reservation</Button>
-      </PopoverTrigger>
-      <PopoverContent>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
        <ReserveForm/>
-      </PopoverContent>
-    </Popover>
+       </AlertDialogContent>
+    </AlertDialog>
   )
 }
