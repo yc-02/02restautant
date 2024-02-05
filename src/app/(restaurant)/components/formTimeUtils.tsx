@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/client";
 
 
 
-export async function formTimeUtils() {
+export async function FormTimeUtils() {
     
     //get all times from database
 

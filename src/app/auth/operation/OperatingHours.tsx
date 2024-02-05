@@ -1,8 +1,8 @@
 "use client"
 
 import { useState,useEffect } from 'react';
-import OpCard from './OperationForm';
 import { createClient } from '@/utils/supabase/client';
+import OperationForm from './OperationForm';
 
 interface StoreData{
   close_time: string;
@@ -50,7 +50,7 @@ export default function OperatingHours() {
   <div>
     <div>
     {operation?.map((data) => 
-    <OpCard key={data.id} operation={data} /> )}
+    <OperationForm key={data.id} operation={data} /> )}
   </div>
   </div>
   

@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import OperatingHours from './OperatingHours'
 
-export default async function PrivatePage() {
+export default async function OperationPage() {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
   

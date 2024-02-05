@@ -1,7 +1,9 @@
 import { createClient } from "@/utils/supabase/actions"
 import { cookies } from "next/headers"
 
-
+type ReservationDetailsParams = {
+    id: string; 
+  };
 
 async function getReservation(id:string){
     const cookieStore = cookies()
@@ -17,7 +19,7 @@ async function getReservation(id:string){
 
 
 
-export default async function reservationDetials({params}:any){
+export default async function DetialPage({params}:{params:ReservationDetailsParams}){
     const data= await getReservation(params.id)
 
 

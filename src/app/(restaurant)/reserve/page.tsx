@@ -3,7 +3,7 @@ import { ImageSlider } from "@/app/(restaurant)/components/ImageSlider"
 import { PopoverReserve } from "@/app/(restaurant)/components/PopoverReserve"
 
 
-export default function menus() {
+export default function ReservePage() {
 
   return (
    <div>

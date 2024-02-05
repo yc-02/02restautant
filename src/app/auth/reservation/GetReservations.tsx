@@ -2,7 +2,7 @@
 
 import { useState,useEffect, useTransition, SetStateAction, useCallback } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { deleteReservation } from './DeleteReservation'
+import { DeleteReservation } from './DeleteReservation'
 interface reserveData{
   date: string
   email: string
@@ -97,7 +97,7 @@ const [reservations,setReservations]=useState<reserveData[]>([])
       <p className='w-32'>{item.party}</p>
       <p className='w-32'>{item.phone}</p>
       <p className='w-40'>{item.email}</p>
-      <button className='bg-slate-700 rounded-xl p-1 ml-5' onClick={()=>startTransition(()=>deleteReservation(item.id))}
+      <button className='bg-slate-700 rounded-xl p-1 ml-5' onClick={()=>startTransition(()=>DeleteReservation(item.id))}
               disabled={isPending}>
                 {isPending && (<span className='text-slate-50'>Deleting....</span>)} 
                 {!isPending && (<span className='text-slate-50'>Delete</span> )}</button>

@@ -3,7 +3,7 @@ import Link from "next/link"
 import { useState } from "react"
 
 
-export default function Navbar(){
+export default function HomeNav(){
     const [open,setOpen]=useState(false)
     const toggle =()=>{
         setOpen(!open)

@@ -1,7 +1,7 @@
 "use client"
 //form validation
-import { useForm, useWatch, } from "react-hook-form"
-import { FormSchema } from "./formSchema"
+import { useForm} from "react-hook-form"
+import { FormSchema } from "./FormSchema"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 //shadcn components
@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input"
 import { createClient } from "@/utils/supabase/client"
 import { addDays,format} from "date-fns"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState} from "react"
+import { useEffect} from "react"
 
 interface ReserveFormProps {
   timeOption: string[];
@@ -40,7 +40,6 @@ export default function ReservationForm( {timeOption,getTimeOption}: ReserveForm
 
 
 
- 
 
 
   const onSubmit =async (data: z.infer<typeof FormSchema>)=> {

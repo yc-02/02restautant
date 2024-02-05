@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 
 
-export async function deleteReservation(id:string){
+export async function DeleteReservation(id:string){
     const supabase=createClient()
     console.log('Deleting reservation with ID:', id);
     const {error} = await supabase.from('reservations').delete().eq('id',id)

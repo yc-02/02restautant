@@ -15,12 +15,12 @@ interface StoreData{
   open_time: string;
 }
 
-interface OpCardProps {
+interface OperationProps {
   operation: StoreData;
 }
 
 
-const OpCard: React.FC<OpCardProps> = ({ operation }) => {
+const OperationForm: React.FC<OperationProps> = ({ operation }) => {
 
 const opData = operation
 const [edit,setEdit]=useState(false)
@@ -107,4 +107,4 @@ const formattedTime = time.map((time)=>time.toLocaleTimeString('en-US', { hour: 
 )
 }
 
-export default OpCard;
+export default OperationForm;

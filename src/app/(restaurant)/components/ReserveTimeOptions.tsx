@@ -1,13 +1,14 @@
 "use client"
-//form validation
+
 import { useForm} from "react-hook-form"
-import { FormSchema } from "./formSchema"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { DateValues, addMinutes,set } from "date-fns"
-import { useCallback, useEffect,useState } from "react"
-import { formTimeUtils } from "./formTimeUtils"
+import { addMinutes,set } from "date-fns"
+import { useEffect,useState } from "react"
+
 import ReservationForm from "./ReserveForm"
+import { FormTimeUtils } from "./formTimeUtils"
+import { FormSchema } from "./FormSchema"
 
 
 interface TimeData{
@@ -31,7 +32,7 @@ const ReserveTimeOptions: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const timesData = await formTimeUtils();
+        const timesData = await FormTimeUtils();
         setTimes(timesData);
         console.log('Fetched times:', timesData);
 

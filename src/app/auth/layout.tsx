@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AuthNav from "./components/authNav";
 
 
+
 export const metadata: Metadata = {
   title: "Admin",
 };
