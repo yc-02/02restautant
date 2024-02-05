@@ -1,12 +1,10 @@
 "use client"
 import { useRouter} from 'next/navigation'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@/utils/supabase/client'
 
 export default function SignoutButton() {
     const router=useRouter()
-    const supabase=createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+    const supabase=createClient()
     const handleSignOut=async()=>{
         const{error} = await supabase.auth.signOut()
         if (error){
@@ -17,6 +15,6 @@ export default function SignoutButton() {
     }
 
   return (
-    <button onClick={handleSignOut} className="bg-slate-200 p-1 rounded cursor-pointer">Sign out</button>
+    <button onClick={handleSignOut} className="bg-slate-50 text-slate-800 rounded-xl p-1 cursor-pointer">Sign out</button>
   )
 }

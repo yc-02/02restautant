@@ -1,5 +1,5 @@
-import MenuCard from "./MenuCard"
-import { ImageSlider } from "@/app/components/ImageSlider"
+import MenuCard from "../components/MenuCard"
+import { ImageSlider } from "@/app/(restaurant)/components/ImageSlider"
 
 
 export default function menus() {

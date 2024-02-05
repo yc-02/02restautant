@@ -4,9 +4,8 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import ReserveTimeOptions from "./ReserveTimeOptions"
 
-
-import ReserveForm from "./ReserveForm"
 
 export function PopoverReserve() {
   return (
@@ -15,7 +14,7 @@ export function PopoverReserve() {
         <Button variant="outline">Make a reservation</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
-       <ReserveForm/>
+       <ReserveTimeOptions/>
        </AlertDialogContent>
     </AlertDialog>
   )

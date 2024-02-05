@@ -1,6 +1,6 @@
 "use client"
 //form validation
-import { useForm } from "react-hook-form"
+import { useForm, useWatch, } from "react-hook-form"
 import { FormSchema } from "./formSchema"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,97 +14,37 @@ import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {AlertDialogCancel} from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
-//supabase database
-import { createBrowserClient } from "@supabase/ssr"
-import { Database } from "../../../database.types"
-//react and others
-import { useState,useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { addDays, addMinutes, format, formatDate, set } from "date-fns"
-interface TimeData{
-    close_time: string;
-    created_at: string;
-    dayofweek: string;
-    id: number;
-    name: string;
-    open_time: string;
-}
 
-export default function ReserveForm() {
-  const router =useRouter()
-  const supabase=createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+//database and others
+import { createClient } from "@/utils/supabase/client"
+import { addDays,format} from "date-fns"
+import { useRouter } from "next/navigation"
+import { useCallback, useEffect, useState} from "react"
+
+interface ReserveFormProps {
+  timeOption: string[];
+  getTimeOption: (selectedDate: Date) => void;
+}
+export default function ReservationForm( {timeOption,getTimeOption}: ReserveFormProps) {
+ const router =useRouter()
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
   
-//get all times from database
-  const [times, setTimes] = useState<TimeData[]>([])
-  async function getTimes() {
-    const{data,error}= await supabase.from('store_time').select()
-    if(data){
-      setTimes(data)
-    }else{
-      throw new Error(error.message)
-    }
-  } 
-  
-  useEffect(() => {
-    getTimes();
-  }, [])
-
-
-//get time options based on date for reservation form
-  const[timeOption,setTimeOption]=useState<string[]>([])
-  const getTimeOption=(selectedDate:Date)=>{
-    let beginningHour;
-    let endHour;
-    let beginningMinutes;
-    let endMinutes;
-    times.forEach((time)=>{
-      let day = time.dayofweek
-      let open =time.open_time
-      let close=time.close_time
-    
-    if (selectedDate.getDay().toString()==day){
-       [beginningHour,beginningMinutes] = open.split(":"),
-       [endHour,endMinutes]=close.split(":")
-    }
-// if today hour passed not able to select any time
-    const checktoday=selectedDate.toDateString()
-    if (checktoday==new Date().toDateString()){
-      beginningHour=new Date().getHours()
-      beginningMinutes=new Date().getMinutes()
-      endHour=new Date().getHours()
-      endMinutes=new Date().getMinutes()
-    }
-  })
+   const selectedDate=form.watch('date')
+   useEffect(() => {
+     getTimeOption(selectedDate);
+   }, [selectedDate]);
  
 
 
-  const beginningOption =set(selectedDate,{hours:beginningHour ,minutes:beginningMinutes})
-  const endOption=set(selectedDate,{hours:endHour,minutes:endMinutes})
-  const options=[]
-  for (let i=beginningOption;i<endOption;i=addMinutes(i,30)){
-    options.push(i)
-  }
-  setTimeOption(options.map((time)=>time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })))
 
-  }
+ 
 
 
-  useEffect(() => {
-    if (form.watch('date')) {
-       getTimeOption(form.watch('date'));
-     }
-   }, [form.watch('date')]);
-
-
-//insert reservation to database
   const onSubmit =async (data: z.infer<typeof FormSchema>)=> {
-    
+    const supabase=createClient()
     const {data:reserveData,error} = await supabase.from('reservations').insert(
       {
         date:data.date.toLocaleDateString(),
@@ -127,8 +67,8 @@ export default function ReserveForm() {
       if (error) {
         throw new Error(error.message)
       }
-
     }
+
 
 
   return(

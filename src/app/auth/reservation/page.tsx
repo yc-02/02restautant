@@ -1,7 +1,8 @@
+import GetReservations from './GetReservations'
 import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import OperatingHours from './OperatingHours'
+
 
 export default async function PrivatePage() {
     const cookieStore = cookies()
@@ -13,9 +14,6 @@ export default async function PrivatePage() {
     }
 
     return(
-        <div>
-            <OperatingHours/>
-        </div>
-
+      <GetReservations/>
     )
 }

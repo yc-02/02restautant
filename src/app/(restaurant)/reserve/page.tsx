@@ -1,6 +1,6 @@
 
-import { ImageSlider } from "@/app/components/ImageSlider"
-import { PopoverReserve } from "@/app/components/PopoverReserve"
+import { ImageSlider } from "@/app/(restaurant)/components/ImageSlider"
+import { PopoverReserve } from "@/app/(restaurant)/components/PopoverReserve"
 
 
 export default function menus() {

@@ -12,11 +12,11 @@ export default async function AuthNav() {
   const { data } = await supabase.auth.getUser()
 
   return (
-    <div className='flex shadow justify-between p-3 items-center'>
-    <p>Hello, {data?.user?.email}</p>
-    <div className='flex gap-5'>
-    <Link href="/auth" className="bg-slate-200 p-1 rounded cursor-pointer">Reservations</Link>
-    <Link href='/auth/operation' className="bg-slate-200 p-1 rounded cursor-pointer">Hours of Operation</Link>
+    <div className='flex shadow justify-between p-3 items-center bg-slate-700'>
+    <p className='text-slate-50'>Hello, {data?.user?.email}</p>
+    <div className='flex gap-5 items-baseline'>
+    <Link href="/auth/reservation" className=" text-slate-50 cursor-pointer">Reservations</Link>
+    <Link href='/auth/operation' className="text-slate-50 cursor-pointer">Operating hours</Link>
     <SignoutButton/>
     </div>
     </div>

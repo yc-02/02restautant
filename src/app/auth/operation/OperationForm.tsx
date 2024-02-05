@@ -1,8 +1,7 @@
 
-import { Card,CardHeader,CardFooter,CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
 import {addMinutes,format,set,parse} from 'date-fns';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient } from '@/utils/supabase/client';
 import { redirect } from 'next/navigation';
 
 
@@ -31,9 +30,7 @@ const [close_time,setCloseTime]=useState(opData.close_time)
 
 //edit operation time 
 async function updateTime() {
-  const supabase=createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  const supabase=createClient()
 //parse time back to 24 hour clock
     const opentime = open_time;
     const parsedOpenTime = parse(opentime, 'h:mm a', new Date());
@@ -69,24 +66,21 @@ for (let i = open; i < close; i = addMinutes(i, 30)) {
 const formattedTime = time.map((time)=>time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }))
 
  return(
- <div>
+ <div className='my-2 ml-10'>
      {edit==false?
-        <Card className=" hover:bg-slate-50">
-        <CardHeader>
-          <CardTitle>Day: {opData.name}</CardTitle>
-          <CardTitle>Day of Week: {opData.dayofweek}</CardTitle>
-          <CardTitle>Open: {opData.open_time}</CardTitle>
-          <CardTitle>close:{opData.close_time}</CardTitle>
-        </CardHeader>
-        <CardFooter>
-        <button onClick={()=>setEdit(true)} className='bg-slate-300 rounded p-1'>Edit</button>
-        </CardFooter>
-        </Card>:
-        <Card>
-        <form className='flex flex-col gap-2 p-2' action={updateTime}>
-            <label>Name: <input type="text" name='name' defaultValue={opData.name}/></label>
-            <label>Day of Week: <input type="text" name='dayofweek' defaultValue={opData.dayofweek}/></label>
-            <label htmlFor="open_time">
+     <div className='flex items-start gap-5'>
+          <p className='w-36'>Day: {opData.name}</p>
+          <p className='w-36'>Day of Week: {opData.dayofweek}</p>
+          <p className='w-36'>Open: {opData.open_time}</p>
+          <p className='w-36'>close:{opData.close_time}</p>
+ 
+        <button onClick={()=>setEdit(true)} className='bg-slate-700 text-slate-50 rounded-xl p-1'>Edit</button>
+      </div>:
+        <div className='flex items-start gap-5'>
+        <p className='w-36'>Day: {opData.name}</p>
+        <p className='w-36'>Day of Week: {opData.dayofweek}</p>
+        <form className='flex items-start' action={updateTime} >
+            <label className='w-36' htmlFor="open_time">
               Open Time:
               <select name="open_time" defaultValue={opData.open_time}
                             onChange={(e) => setOpenTime(e.target.value)}>
@@ -95,7 +89,7 @@ const formattedTime = time.map((time)=>time.toLocaleTimeString('en-US', { hour: 
                 )}
               </select>
             </label>
-            <label htmlFor="close_time">
+            <label htmlFor="close_time" className='w-36'>
               Close Time:
               <select name="close_time" defaultValue={opData.close_time}
                             onChange={(e) => setCloseTime(e.target.value)}>
@@ -104,12 +98,11 @@ const formattedTime = time.map((time)=>time.toLocaleTimeString('en-US', { hour: 
                 )}
               </select>
             </label>
-            <div className='flex justify-between'>
-            <button onClick={()=>setEdit(false)} className='bg-slate-300 rounded p-1'>Back</button>
-            <button type='submit' className='bg-slate-300 rounded p-1'>Update</button>
-            </div>
+            <button onClick={()=>setEdit(false)} className='bg-slate-700 text-slate-50 rounded-xl p-1 mx-10'>Back</button>
+            <button type='submit' className='bg-slate-700 text-slate-50 rounded-xl p-1'>Update</button>
         </form>
-        </Card>}
+        </div>
+       }
 </div>
 )
 }

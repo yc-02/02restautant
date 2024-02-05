@@ -1,9 +1,8 @@
 "use client"
 
 import { useState,useEffect } from 'react';
-import OpCard from './operationCard';
-import { createBrowserClient } from '@supabase/ssr';
-import { Database } from '../../../../database.types';
+import OpCard from './OperationForm';
+import { createClient } from '@/utils/supabase/client';
 
 interface StoreData{
   close_time: string;
@@ -15,7 +14,7 @@ interface StoreData{
 }
 
 
-export default function OperationHours() {
+export default function OperatingHours() {
 
 
 //get operation hours from supabase to operation and pass it to card
@@ -26,9 +25,7 @@ export default function OperationHours() {
   }, [])
 
   async function getData() {
-    const supabase=createBrowserClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+    const supabase=createClient()
   
       const { data, error } = await supabase
         .from("store_time")
@@ -36,7 +33,7 @@ export default function OperationHours() {
         .order('dayofweek')
       if (error) throw error;
       if (data != null) {
-        setOperation(data); // [product1,product2,product3]
+        setOperation(data); 
       }
      if(error) {
       alert(error)
@@ -51,7 +48,7 @@ export default function OperationHours() {
   return(
 
   <div>
-    <div className="grid md:grid-cols-2 gap-5 p-5" >
+    <div>
     {operation?.map((data) => 
     <OpCard key={data.id} operation={data} /> )}
   </div>
