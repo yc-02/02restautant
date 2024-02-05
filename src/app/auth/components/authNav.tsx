@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 
 import Link from 'next/link'
-import SignoutButton from './signoutButton'
+import SignoutButton from './SignoutButton'
 
 
 export default async function AuthNav() {

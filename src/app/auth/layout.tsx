@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AuthNav from "./components/authNav";
+import AuthNav from "./components/AuthNav";
 
 
 
