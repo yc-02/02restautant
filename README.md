@@ -4,4 +4,4 @@ Responsive design.
 
 This platform allows guests to make reservations and check restaurant menus.
 
-It also features authentication login for staff to manage reservations, and update operating hours.
+It also features an authentication login for staff to manage reservations, and update operating hours.
